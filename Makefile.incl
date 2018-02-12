@@ -10,9 +10,9 @@ OPENCM3_DIR 	:= $(abspath $(dir $(abspath $(lastword $(MAKEFILE_LIST))))/libopen
 LIBNAME		= opencm3_stm32f4
 DEFS		+= -DSTM32F4
 
-FP_FLAGS	?= # -msoft-float
-ARCH_FLAGS	= -mthumb -mcpu=cortex-m3 $(FP_FLAGS) -mfix-cortex-m3-ldrd
-ASFLAGS		= -mthumb -mcpu=cortex-m3
+FP_FLAGS	?= -mfloat-abi=hard -mfpu=fpv4-sp-d16
+ARCH_FLAGS	= -mthumb -mcpu=cortex-m4 $(FP_FLAGS)
+ASFLAGS		= -mthumb -mcpu=cortex-m4
 
 CC		:= $(PREFIX)-gcc
 CXX		:= $(PREFIX)-g++
@@ -42,7 +42,6 @@ TGT_CFLAGS	+= -Wextra -Wshadow -Wimplicit-function-declaration
 TGT_CFLAGS	+= -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes
 TGT_CFLAGS	+= -fno-common -ffunction-sections -fdata-sections
 TGT_CFLAGS	+= -I$(OPENCM3_DIR)/include
-TGT_CFLAGS	+= -I$(TOP_DIR)/rtos/libwwg/include
 
 TGT_CXXFLAGS	+= $(OPT) $(CXXSTD)
 TGT_CXXFLAGS	+= $(ARCH_FLAGS)
@@ -53,7 +52,6 @@ TGT_CPPFLAGS	+= -MD
 TGT_CPPFLAGS	+= -Wall -Wundef
 TGT_CPPFLAGS	+= $(DEFS)
 TGT_CPPFLAGS	+= -I$(OPENCM3_DIR)/include
-TGT_CPPFLAGS	+= -I$(TOP_DIR)/rtos/libwwg/include
 
 TGT_LDFLAGS	+= --static -nostartfiles
 TGT_LDFLAGS	+= -T$(LDSCRIPT)
@@ -63,8 +61,7 @@ TGT_LDFLAGS	+= -Wl,--gc-sections
 
 LDLIBS		+= -specs=nosys.specs
 LDLIBS		+= -Wl,--start-group -lc -lgcc -lnosys -Wl,--end-group
-LDLIBS		+= -L$(TOP_DIR)/rtos/libwwg -lwwg
-LDLIBS		+= -L$(OPENCM3_DIR)/lib -lopencm3_stm32f1
+LDLIBS		+= -L$(OPENCM3_DIR)/lib -lopencm3_stm32f4
 
 .SUFFIXES:	.elf .bin .hex .srec .list .map .images
 .SECONDEXPANSION:
